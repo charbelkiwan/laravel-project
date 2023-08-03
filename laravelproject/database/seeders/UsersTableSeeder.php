@@ -19,6 +19,6 @@ class UsersTableSeeder extends Seeder
             'password' => 'Kiwan123',
         ]);
 
-        User::factory()->times(9)->create();
+        User::factory()->count(9)->create();
     }
 }

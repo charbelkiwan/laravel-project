@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
+    use HasFactory;
     protected $guarded = ['title', 'description', 'duedate', 'status', 'project_id'];
 
     public function project()

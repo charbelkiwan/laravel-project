@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
+    use HasFactory;
     protected $guarded = ['title', 'description', 'duedate', 'user_id'];
 
     public function user()

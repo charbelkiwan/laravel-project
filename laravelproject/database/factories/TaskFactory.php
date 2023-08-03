@@ -5,10 +5,11 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Project;
 use App\Models\User;
+use App\Models\Task;
 
 class TaskFactory extends Factory
 {
-    protected $model = App\Models\Task::class;
+    protected $model = Task::class;
 
     public function definition()
     {
