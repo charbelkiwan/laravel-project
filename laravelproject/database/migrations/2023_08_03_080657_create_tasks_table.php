@@ -17,11 +17,8 @@ return new class extends Migration
             $table->text('description');
             $table->date('duedate');
             $table->string('status');
-            $table->unsignedBigInteger('project_id');
+            $table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('cascade');
             $table->timestamps();
-
-            // Define foreign key constraint for project_id referencing the projects table
-            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
         });
     }
 

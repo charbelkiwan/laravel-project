@@ -16,11 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->date('duedate');
-            $table->unsignedBigInteger('user_id');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamps();
-
-            // Define foreign key constraint for user_id referencing the users table
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

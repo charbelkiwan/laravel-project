@@ -13,20 +13,6 @@ class ProjectsTableSeeder extends Seeder
      */
     public function run(): void
     {
-        Project::create([
-            'id' => 1,
-            'title' => 'Project 1',
-            'description' => 'Description of Project A',
-            'duedate' => '2023-12-31',
-            'user_id' => 1,
-        ]);
-
-        Project::create([
-            'id' => 2,
-            'title' => 'Project 2',
-            'description' => 'Description of Project B',
-            'duedate' => '2023-11-15',
-            'user_id' => 2,
-        ]);
+        Project::factory()->times(10)->create();
     }
 }
