@@ -13,6 +13,13 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->times(10)->create();
+        User::create([
+            'id' => 1,
+            'name' => 'Charbel Kiwan',
+            'email' => 'charbel_kiwan@outlook.com',
+            'password' => 'Kiwan123',
+        ]);
+
+        User::factory()->times(9)->create();
     }
 }

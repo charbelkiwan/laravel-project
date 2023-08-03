@@ -29,7 +29,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $guarded = [
+    protected $hidden = [
         'password',
         'remember_token',
     ];
@@ -45,7 +45,7 @@ class User extends Authenticatable
     ];
     public function projects()
     {
-        return $this->hasMany(Project::class);
+        return $this->belongsToMany(Project::class, 'project_user', 'user_id', 'project_id');
     }
 
     // If a user can have many tasks, you can define a one-to-many relationship here
