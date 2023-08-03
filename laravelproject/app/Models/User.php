@@ -43,4 +43,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+
+    // If a user can have many tasks, you can define a one-to-many relationship here
+    public function tasks()
+    {
+        return $this->hasManyThrough(Task::class, Project::class);
+    }
 }
