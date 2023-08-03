@@ -8,7 +8,6 @@ use App\Models\User;
 
 class ProjectFactory extends Factory
 {
-    protected $model = Project::class;
 
     public function definition()
     {

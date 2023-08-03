@@ -9,7 +9,6 @@ use App\Models\Task;
 
 class TaskFactory extends Factory
 {
-    protected $model = Task::class;
 
     public function definition()
     {
