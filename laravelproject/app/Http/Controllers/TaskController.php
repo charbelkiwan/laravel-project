@@ -13,10 +13,8 @@ class TaskController extends Controller
         return response(['success' => true, 'data' => $tasks]);
     }
 
-    public function show($id)
+    public function show(Task $task)
     {
-        $task = Task::find($id);
-
         return response(['success' => true, 'data' => $task]);
     }
 
@@ -36,10 +34,8 @@ class TaskController extends Controller
         return response(['success' => true, 'data' => $task]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Task $task)
     {
-        $task = Task::find($id);
-
         $validated_data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -54,10 +50,8 @@ class TaskController extends Controller
         return response(['success' => true, 'data' => $task]);
     }
 
-    public function destroy($id)
+    public function destroy(Task $task)
     {
-        $task = Task::find($id);
-
         $task->delete();
         return response(['success' => true, 'data' => $task]);
     }

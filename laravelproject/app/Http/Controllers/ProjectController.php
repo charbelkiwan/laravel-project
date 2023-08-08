@@ -13,10 +13,8 @@ class ProjectController extends Controller
         return response(['success' => true, 'data' => $projects]);
     }
 
-    public function show($id)
+    public function show(Project $project)
     {
-        $project = Project::find($id);
-
         return response(['success' => true, 'data' => $project]);
     }
 
@@ -34,10 +32,8 @@ class ProjectController extends Controller
         return response(['success' => true, 'data' => $project]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Project $project)
     {
-        $project = Project::find($id);
-
         $validated_data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -50,10 +46,8 @@ class ProjectController extends Controller
         return response(['success' => true, 'data' => $project]);
     }
 
-    public function destroy($project)
+    public function destroy(Project $project)
     {
-        $project = Project::find($project);
-
         $project->delete();
         return response(['success' => true, 'data' => $project]);
     }

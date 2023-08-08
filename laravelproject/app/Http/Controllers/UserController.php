@@ -13,9 +13,8 @@ class UserController extends Controller
         return response(['success' => true, 'data' => $users]);
     }
 
-    public function show($id)
+    public function show(User $user)
     {
-        $user = User::find($id);
         return response(['success' => true, 'data' => $user]);
     }
 
@@ -31,9 +30,8 @@ class UserController extends Controller
         return response(['success' => true, 'data' => $user]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        $user = User::find($id);
         $validated_data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -44,10 +42,8 @@ class UserController extends Controller
         return response(['success' => true, 'data' => $user]);
     }
 
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        $user = User::find($id);
-
         $user->delete();
         return response(['success' => true, 'data' => $user]);
     }
