@@ -17,14 +17,9 @@ use App\Http\Controllers\TaskController;
 |
 */
 
-Route::resource('users', UserController::class);
-Route::resource('projects', ProjectController::class);
-Route::resource('tasks', TaskController::class);
-
-Route::post('projects/{projectId}/users/{userId}', [ProjectController::class, 'assignUser']);
-Route::post('users/{userId}/projects/{projectId}', [UserController::class, 'assignProject']);
-Route::post('tasks/{taskId}/projects/{projectId}', [TaskController::class, 'assignToProject']);
-Route::post('tasks/{taskId}/users/{userId}', [TaskController::class, 'assignToUser']);
+Route::apiResource('users', UserController::class);
+Route::apiResource('projects', ProjectController::class);
+Route::apiResource('tasks', TaskController::class);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

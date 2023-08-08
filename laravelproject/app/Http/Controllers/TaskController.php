@@ -4,84 +4,61 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Task;
-use App\Models\Project;
-use App\Models\User;
 
 class TaskController extends Controller
 {
     public function index()
     {
         $tasks = Task::all();
-        return response()->json($tasks);
+        return response(['success' => true, 'data' => $tasks]);
     }
 
     public function show($id)
     {
         $task = Task::find($id);
-        if (!$task) {
-            return response()->json(['message' => 'Task not found'], 404);
-        }
-        return response()->json($task);
+
+        return response(['success' => true, 'data' => $task]);
     }
 
     public function store(Request $request)
     {
-        $task = Task::create($request->all());
-        return response()->json($task, 201);
+        $validated_data = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'due_date' => 'required|date',
+            'project_id' => 'required|exists:projects,id',
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $task = Task::create($validated_data);
+        $task->users()->attach($validated_data['user_id']);
+        $task->projects()->attach($validated_data['project_id']);
+        return response(['success' => true, 'data' => $task]);
     }
 
     public function update(Request $request, $id)
     {
         $task = Task::find($id);
-        if (!$task) {
-            return response()->json(['message' => 'Task not found'], 404);
-        }
-        $task->update($request->all());
-        return response()->json($task);
-    }
 
-    public function assignToProject(Request $request, $taskId, $projectId)
-    {
-        $task = Task::find($taskId);
-        if (!$task) {
-            return response()->json(['message' => 'Task not found'], 404);
-        }
+        $validated_data = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'due_date' => 'required|date',
+            'project_id' => 'required|exists:projects,id',
+            'user_id' => 'required|exists:users,id',
+        ]);
 
-        $project = Project::find($projectId);
-        if (!$project) {
-            return response()->json(['message' => 'Project not found'], 404);
-        }
-
-        $task->project_id = $project->id;
-        $task->save();
-
-        return response()->json(['message' => 'Task assigned to project']);
-    }
-
-    public function assignToUser(Request $request, $taskId, $userId)
-    {
-        $task = Task::find($taskId);
-        if (!$task) {
-            return response()->json(['message' => 'Task not found'], 404);
-        }
-
-        $user = User::find($userId);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        $task->users()->attach($user->id);
-
-        return response()->json(['message' => 'Task assigned to user']);
+        $task->update($validated_data);
+        $task->users()->sync([$validated_data['user_id']]);
+        $task->projects()->sync([$validated_data['project_id']]);
+        return response(['success' => true, 'data' => $task]);
     }
 
     public function destroy($id)
     {
         $task = Task::find($id);
-        if (!$task) {
-            return response()->json(['message' => 'Task not found'], 404);
-        }
+
         $task->delete();
-        return response()->json(['message' => 'Task deleted successfully']);
+        return response(['success' => true, 'data' => $task]);
     }
 }

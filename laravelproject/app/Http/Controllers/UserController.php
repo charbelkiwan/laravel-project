@@ -4,71 +4,51 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Project;
 
 class UserController extends Controller
 {
     public function index()
     {
         $users = User::all();
-        return response()->json($users);
+        return response(['success' => true, 'data' => $users]);
     }
 
     public function show($id)
     {
         $user = User::find($id);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-        return response()->json($user);
+        return response(['success' => true, 'data' => $user]);
     }
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $validated_data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8',
         ]);
 
-        $user = User::create($validatedData);
-        return response()->json($user, 201);
+        $user = User::create($validated_data);
+        return response(['success' => true, 'data' => $user]);
     }
 
     public function update(Request $request, $id)
     {
         $user = User::find($id);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-        $user->update($request->all());
-        return response()->json($user);
-    }
+        $validated_data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8',
+        ]);
 
-    public function assignProject(Request $request, $userId, $projectId)
-    {
-        $user = User::find($userId);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        $project = Project::find($projectId);
-        if (!$project) {
-            return response()->json(['message' => 'Project not found'], 404);
-        }
-
-        $user->projects()->attach($project->id);
-
-        return response()->json(['message' => 'Project assigned to user']);
+        $user->update($validated_data);
+        return response(['success' => true, 'data' => $user]);
     }
 
     public function destroy($id)
     {
         $user = User::find($id);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
+
         $user->delete();
-        return response()->json(['message' => 'User deleted successfully']);
+        return response(['success' => true, 'data' => $user]);
     }
 }
