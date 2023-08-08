@@ -23,7 +23,7 @@ class ProjectController extends Controller
         $validated_data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'duedate' => 'required|date',
+            'due_date' => 'required|date',
             'user_id' => 'required|exists:users,id',
         ]);
 
@@ -37,7 +37,7 @@ class ProjectController extends Controller
         $validated_data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'duedate' => 'required|date',
+            'due_date' => 'required|date',
             'user_id' => 'required|exists:users,id',
         ]);
 
