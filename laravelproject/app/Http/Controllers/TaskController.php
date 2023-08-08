@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Models\Task;
 
 class TaskController extends Controller
@@ -30,8 +31,6 @@ class TaskController extends Controller
         ]);
 
         $task = Task::create($validated_data);
-        $task->users()->attach($validated_data['user_id']);
-        $task->projects()->attach($validated_data['project_id']);
         return response(['success' => true, 'data' => $task]);
     }
 
@@ -47,14 +46,12 @@ class TaskController extends Controller
         ]);
 
         $task->update($validated_data);
-        $task->users()->sync([$validated_data['user_id']]);
-        $task->projects()->sync([$validated_data['project_id']]);
         return response(['success' => true, 'data' => $task]);
     }
 
     public function destroy(Task $task)
     {
         $task->delete();
-        return response(['success' => true, 'data' => $task]);
+        return response(['data' => $task], Response::HTTP_NO_CONTENT);
     }
 }

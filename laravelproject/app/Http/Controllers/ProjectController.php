@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Models\Project;
 
 class ProjectController extends Controller
@@ -28,7 +29,6 @@ class ProjectController extends Controller
         ]);
 
         $project = Project::create($validated_data);
-        $project->users()->attach($validated_data['user_id']);
         return response(['success' => true, 'data' => $project]);
     }
 
@@ -42,13 +42,12 @@ class ProjectController extends Controller
         ]);
 
         $project->update($validated_data);
-        $project->users()->sync($validated_data['user_id']);
         return response(['success' => true, 'data' => $project]);
     }
 
     public function destroy(Project $project)
     {
         $project->delete();
-        return response(['success' => true, 'data' => $project]);
+        return response(['data' => $project], Response::HTTP_NO_CONTENT);
     }
 }
