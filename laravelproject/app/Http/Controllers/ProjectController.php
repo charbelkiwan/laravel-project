@@ -15,6 +15,7 @@ class ProjectController extends Controller
             ->with(['users', 'tasks'])
             ->allowedFilters('title')
             ->allowedSorts('created_at')
+            ->defaultSort('-created_at')
             ->paginate(request('per_page', 10))
             ->appends(request()->query());
 
