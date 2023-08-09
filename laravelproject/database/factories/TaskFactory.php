@@ -15,10 +15,10 @@ class TaskFactory extends Factory
         return [
             'title' => $this->faker->sentence(4),
             'description' => $this->faker->paragraph,
-            'duedate' => $this->faker->dateTimeBetween('now', '+1 year'),
+            'due_date' => $this->faker->dateTimeBetween('now', '+1 year'),
             'status' => $this->faker->randomElement(['pending', 'in_progress', 'completed']),
-            'project_id' => Project::factory()->create()->id,
-            'user_id' => User::factory()->create()->id,
+            'project_id' => Project::inRandomOrder()->first()->id,
+            'user_id' => User::inRandomOrder()->first()->id,
         ];
     }
 }

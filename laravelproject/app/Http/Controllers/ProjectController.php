@@ -8,15 +8,26 @@ use App\Models\Project;
 
 class ProjectController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $projects = Project::all();
+        $query = Project::with('users', 'tasks');
+
+        if ($request->has('title')) {
+            $query->where('title', 'like', '%' . $request->title . '%');
+        }
+
+        if ($request->has('sort') && $request->sort === 'created') {
+            $query->orderBy('created_at');
+        }
+        $perPage = 10;
+        $projects = $query->paginate($perPage);
         return response(['success' => true, 'data' => $projects]);
     }
 
     public function show(Project $project)
     {
-        return response(['success' => true, 'data' => $project]);
+        $project_with_relations = $project->load('users', 'tasks');
+        return response(['success' => true, 'data' => $project_with_relations]);
     }
 
     public function store(Request $request)

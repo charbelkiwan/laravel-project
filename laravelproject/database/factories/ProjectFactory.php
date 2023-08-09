@@ -14,8 +14,8 @@ class ProjectFactory extends Factory
         return [
             'title' => $this->faker->sentence(),
             'description' => $this->faker->paragraph,
-            'duedate' => $this->faker->dateTimeBetween('now', '+1 year'),
-            'user_id' => User::factory()->create()->id,
+            'due_date' => $this->faker->dateTimeBetween('now', '+1 year'),
+            'user_id' => User::inRandomOrder()->first()->id,
         ];
     }
 }

@@ -8,15 +8,24 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        $query = User::with('projects', 'tasks');
+        if ($request->has('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+        if ($request->has('sort') && $request->sort === 'created') {
+            $query->orderBy('created_at');
+        }
+        $perPage = 10;
+        $users = $query->paginate($perPage);
         return response(['success' => true, 'data' => $users]);
     }
 
     public function show(User $user)
     {
-        return response(['success' => true, 'data' => $user]);
+        $user_with_relations = $user->load('projects', 'tasks');
+        return response(['success' => true, 'data' => $user_with_relations]);
     }
 
     public function store(Request $request)
