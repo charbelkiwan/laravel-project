@@ -16,7 +16,8 @@ class TaskController extends Controller
             ->with(['user', 'project'])
             ->allowedFilters('title')
             ->allowedSorts('created_at')
-            ->paginate(10);
+            ->paginate(request('per_page', 10))
+            ->appends(request()->query());
 
         return response(['success' => true, 'data' => $tasks]);
     }
