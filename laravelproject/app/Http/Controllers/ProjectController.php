@@ -2,32 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Project;
 
 class ProjectController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = Project::with('users', 'tasks');
+        $projects = QueryBuilder::for(Project::class)
+            ->with(['users', 'tasks'])
+            ->allowedFilters('title')
+            ->allowedSorts('created_at')
+            ->paginate(10);
 
-        if ($request->has('title')) {
-            $query->where('title', 'like', '%' . $request->title . '%');
-        }
-
-        if ($request->has('sort') && $request->sort === 'created') {
-            $query->orderBy('created_at');
-        }
-        $perPage = 10;
-        $projects = $query->paginate($perPage);
         return response(['success' => true, 'data' => $projects]);
     }
 
     public function show(Project $project)
     {
-        $project_with_relations = $project->load('users', 'tasks');
-        return response(['success' => true, 'data' => $project_with_relations]);
+        $project->load('users', 'tasks');
+        return response(['success' => true, 'data' => $project]);
     }
 
     public function store(Request $request)

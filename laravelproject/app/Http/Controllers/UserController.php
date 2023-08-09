@@ -2,30 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\User;
 
 class UserController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = User::with('projects', 'tasks');
-        if ($request->has('name')) {
-            $query->where('name', 'like', '%' . $request->name . '%');
-        }
-        if ($request->has('sort') && $request->sort === 'created') {
-            $query->orderBy('created_at');
-        }
-        $perPage = 10;
-        $users = $query->paginate($perPage);
+        $users = QueryBuilder::for(User::class)
+            ->with(['projects', 'tasks'])
+            ->allowedFilters('name')
+            ->allowedSorts('created_at')
+            ->paginate(10);
+
         return response(['success' => true, 'data' => $users]);
     }
 
+
     public function show(User $user)
     {
-        $user_with_relations = $user->load('projects', 'tasks');
-        return response(['success' => true, 'data' => $user_with_relations]);
+        $user->load('projects', 'tasks');
+        return response(['success' => true, 'data' => $user]);
     }
 
     public function store(Request $request)
