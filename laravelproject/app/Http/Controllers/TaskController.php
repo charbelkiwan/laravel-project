@@ -15,7 +15,7 @@ class TaskController extends Controller
         $tasks = QueryBuilder::for(Task::class)
             ->with(['user', 'project'])
             ->allowedFilters('title')
-            ->allowedSorts('created_at')
+            ->allowedSorts('created_at', 'title', 'id')
             ->defaultSort('-created_at')
             ->paginate(request('per_page', 10))
             ->appends(request()->query());

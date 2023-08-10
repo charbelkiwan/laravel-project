@@ -14,7 +14,7 @@ class UserController extends Controller
         $users = QueryBuilder::for(User::class)
             ->with(['projects', 'tasks'])
             ->allowedFilters('name')
-            ->allowedSorts('created_at')
+            ->allowedSorts('created_at', 'id', 'name')
             ->defaultSort('-created_at')
             ->paginate(request('per_page', 10))
             ->appends(request()->query());

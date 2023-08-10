@@ -14,7 +14,7 @@ class ProjectController extends Controller
         $projects = QueryBuilder::for(Project::class)
             ->with(['users', 'tasks'])
             ->allowedFilters('title')
-            ->allowedSorts('created_at')
+            ->allowedSorts('created_at', 'id', 'title')
             ->defaultSort('-created_at')
             ->paginate(request('per_page', 10))
             ->appends(request()->query());
