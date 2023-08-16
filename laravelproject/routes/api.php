@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\API\SessionController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +22,11 @@ use App\Http\Controllers\TaskController;
 Route::apiResource('users', UserController::class);
 Route::apiResource('projects', ProjectController::class);
 Route::apiResource('tasks', TaskController::class);
+
+Route::controller(SessionController::class)->group(function () {
+    Route::post('login', 'login');
+    Route::post('logout', 'logout');
+});
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
