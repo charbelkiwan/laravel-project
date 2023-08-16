@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Spatie\QueryBuilder\AllowedFilter;
 use App\Models\Project;
 
 class ProjectController extends Controller
@@ -13,7 +14,7 @@ class ProjectController extends Controller
     {
         $projects = QueryBuilder::for(Project::class)
             ->with(['users', 'tasks'])
-            ->allowedFilters('title')
+            ->allowedFilters('title', AllowedFilter::exact('id'))
             ->allowedSorts('created_at', 'id', 'title')
             ->defaultSort('-created_at')
             ->paginate(request('per_page', 10))

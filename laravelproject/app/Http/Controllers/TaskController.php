@@ -6,6 +6,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Task;
+use Spatie\QueryBuilder\AllowedFilter;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TaskController extends Controller
@@ -14,7 +15,7 @@ class TaskController extends Controller
     {
         $tasks = QueryBuilder::for(Task::class)
             ->with(['user', 'project'])
-            ->allowedFilters('title')
+            ->allowedFilters('title', AllowedFilter::exact('id'))
             ->allowedSorts('created_at', 'title', 'id')
             ->defaultSort('-created_at')
             ->paginate(request('per_page', 10))
