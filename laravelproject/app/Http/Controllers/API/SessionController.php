@@ -10,12 +10,8 @@ use Illuminate\Support\Facades\Hash;
 
 class SessionController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['login']]);
-    }
 
-    public function login(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'email' => 'required|string|email',
@@ -40,9 +36,11 @@ class SessionController extends Controller
         ]);
     }
 
-    public function logout()
+    public function destroy()
     {
-        Auth::logout();
+        Auth::user()->tokens->each(function ($token) {
+            $token->delete();
+        });
         return response()->json([
             'message' => 'Successfully logged out',
         ]);

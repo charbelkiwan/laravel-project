@@ -23,10 +23,8 @@ Route::apiResource('users', UserController::class);
 Route::apiResource('projects', ProjectController::class);
 Route::apiResource('tasks', TaskController::class);
 
-Route::controller(SessionController::class)->group(function () {
-    Route::post('login', 'login');
-    Route::post('logout', 'logout');
-});
+Route::post('login', [SessionController::class, 'store']);
+Route::middleware('auth:sanctum')->post('logout', [SessionController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
