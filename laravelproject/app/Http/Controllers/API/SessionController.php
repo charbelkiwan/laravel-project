@@ -15,12 +15,7 @@ class SessionController extends Controller
 
     public function store(Request $request)
     {
-        $attributes = [
-            'email' => $request->input('email'),
-            'password' => $request->input('password'),
-        ];
-
-        $request->validate([
+        $attributes = $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
@@ -42,11 +37,9 @@ class SessionController extends Controller
         ]);
     }
 
-    public function destroy()
+    public function destroy(Request $request)
     {
-        Auth::user()->tokens->each(function ($token) {
-            $token->delete();
-        });
+        $request->user()->tokens()->delete();
         return response('Successfully logged out', Response::HTTP_FORBIDDEN);
     }
 }
