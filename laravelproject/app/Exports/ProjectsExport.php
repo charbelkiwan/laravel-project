@@ -15,7 +15,10 @@ class ProjectsExport implements WithHeadings, FromQuery, WithMapping
 
     public function query()
     {
-        return Project::query()->with('tasks');
+        return Project::select('id', 'title', 'description')
+            ->with(['tasks' => function ($query) {
+                $query->select('title');
+            }]);
     }
 
     public function headings(): array
@@ -28,6 +31,8 @@ class ProjectsExport implements WithHeadings, FromQuery, WithMapping
 
     public function map($project): array
     {
+        $project->load('tasks');
+
         return [
             $project->title,
             implode(" | ", $project->tasks->pluck('title')->toArray()),
