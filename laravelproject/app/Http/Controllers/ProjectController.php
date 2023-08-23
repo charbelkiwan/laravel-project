@@ -63,8 +63,12 @@ class ProjectController extends Controller
         return response(['data' => $project], Response::HTTP_NO_CONTENT);
     }
 
-    public function export()
+    public function export(Request $request)
     {
-        return Excel::download(new ProjectsExport, 'projects.xlsx');
+        $filters = [
+            'due_date' => $request->input('filter.due_date'),
+        ];
+
+        return Excel::download(new ProjectsExport($filters), 'projects.xlsx');
     }
 }

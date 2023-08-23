@@ -9,13 +9,24 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class ProjectsExport implements WithHeadings, FromQuery, WithMapping
 {
-    public function __construct()
+    protected $filters;
+
+    public function __construct($filters)
     {
+        $this->filters = $filters;
     }
 
     public function query()
     {
-        return Project::query()->with('tasks:id,title');
+        $query = Project::query()->with('tasks:id,title');
+
+        if ($this->filters) {
+            if (isset($this->filters['due_date'])) {
+                $query->whereYear('due_date', $this->filters['due_date']);
+            }
+        }
+
+        return $query;
     }
 
     public function headings(): array
