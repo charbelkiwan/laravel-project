@@ -3,14 +3,34 @@
 namespace App\Exports;
 
 use App\Models\Project;
-use Illuminate\Contracts\View\View;
-use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\WithMapping;
 
-class ProjectsExport implements FromView
+class ProjectsExport implements WithHeadings, FromQuery, WithMapping
 {
-    public function view(): View
+    public function __construct()
     {
-        $projects = Project::with('tasks')->get();
-        return view('exports.projects', compact('projects'));
+    }
+
+    public function query()
+    {
+        return Project::query()->with('tasks');
+    }
+
+    public function headings(): array
+    {
+        return [
+            'Project Name',
+            'Task Name',
+        ];
+    }
+
+    public function map($project): array
+    {
+        return [
+            $project->title,
+            implode(" | ", $project->tasks->pluck('title')->toArray()),
+        ];
     }
 }
