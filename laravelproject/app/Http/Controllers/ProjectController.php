@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Spatie\QueryBuilder\AllowedFilter;
 use App\Models\Project;
+use App\Exports\ProjectsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProjectController extends Controller
 {
@@ -59,5 +61,10 @@ class ProjectController extends Controller
     {
         $project->delete();
         return response(['data' => $project], Response::HTTP_NO_CONTENT);
+    }
+
+    public function export()
+    {
+        return Excel::download(new ProjectsExport, 'projects.xlsx');
     }
 }
