@@ -65,11 +65,11 @@ class ProjectController extends Controller
 
     public function export(Request $request)
     {
-        $filters = [
-            'id'    => $request->input('filter.id'),
-            'title' => $request->input('filter.title'),
-            'due_date' => $request->input('filter.due_date'),
-        ];
+        $filters = $this->validate($request, [
+            'id'       => 'nullable|integer',
+            'title'    => 'nullable|string',
+            'due_date' => 'nullable|integer|digits:4',
+        ]);
 
         return Excel::download(new ProjectsExport($filters), 'projects.xlsx');
     }
