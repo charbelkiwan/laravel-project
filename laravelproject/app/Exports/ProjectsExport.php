@@ -21,6 +21,12 @@ class ProjectsExport implements WithHeadings, FromQuery, WithMapping
         $query = Project::query()->with('tasks:id,title');
 
         if ($this->filters) {
+            if (isset($this->filters['id'])) {
+                $query->where('id', $this->filters['id']);
+            }
+            if (isset($this->filters['title'])) {
+                $query->where('title', $this->filters['title']);
+            }
             if (isset($this->filters['due_date'])) {
                 $query->whereYear('due_date', $this->filters['due_date']);
             }

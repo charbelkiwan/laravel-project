@@ -66,6 +66,8 @@ class ProjectController extends Controller
     public function export(Request $request)
     {
         $filters = [
+            'id'    => $request->input('filter.id'),
+            'title' => $request->input('filter.title'),
             'due_date' => $request->input('filter.due_date'),
         ];
 
