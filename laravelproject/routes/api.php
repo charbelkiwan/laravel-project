@@ -27,6 +27,7 @@ Route::post('login', [SessionController::class, 'store']);
 Route::middleware('auth:sanctum')->post('logout', [SessionController::class, 'destroy']);
 
 Route::get('export', [ProjectController::class, 'export']);
+Route::post('import-projects', [ProjectController::class, 'import']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

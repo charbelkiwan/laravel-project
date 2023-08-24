@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Spatie\QueryBuilder\AllowedFilter;
 use App\Models\Project;
 use App\Exports\ProjectsExport;
+use App\Imports\ProjectsImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProjectController extends Controller
@@ -72,5 +73,13 @@ class ProjectController extends Controller
         ]);
 
         return Excel::download(new ProjectsExport($filters), 'projects.xlsx');
+    }
+    public function import()
+    {
+        $filePath = storage_path('app/import_projects.xlsx');
+
+        Excel::import(new ProjectsImport, $filePath);
+
+        return response()->json(['message' => 'Projects imported successfully']);
     }
 }
