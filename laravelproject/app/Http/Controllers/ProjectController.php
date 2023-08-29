@@ -77,13 +77,10 @@ class ProjectController extends Controller
     }
     public function import(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'import_file' => 'required|mimes:xls,xlsx,csv',
+        Validator::make($request->all(), [
+            'import_file' => 'required|mimetypes:application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ]);
 
-        if ($validator->fails()) {
-            return response(['success' => false, 'message' => $validator->errors()], 400);
-        }
         $imported_file = $request->file('import_file');
         Excel::import(new ProjectsImport, $imported_file);
         return response(['success' => true, 'message' => 'Projects imported successfully']);
