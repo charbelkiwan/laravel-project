@@ -10,6 +10,7 @@ use App\Models\Project;
 use App\Exports\ProjectsExport;
 use App\Imports\ProjectsImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
 {
@@ -76,12 +77,15 @@ class ProjectController extends Controller
     }
     public function import(Request $request)
     {
-        if ($request->hasFile('import_file')) {
-            $imported_file = $request->file('import_file');
-            Excel::import(new ProjectsImport, $imported_file);
-            return response()->json(['message' => 'Projects imported successfully']);
-        } else {
-            return response()->json(['message' => 'No file provided for import']);
+        $validator = Validator::make($request->all(), [
+            'import_file' => 'required|mimes:xls,xlsx,csv',
+        ]);
+
+        if ($validator->fails()) {
+            return response(['success' => false, 'message' => $validator->errors()], 400);
         }
+        $imported_file = $request->file('import_file');
+        Excel::import(new ProjectsImport, $imported_file);
+        return response(['success' => true, 'message' => 'Projects imported successfully']);
     }
 }
