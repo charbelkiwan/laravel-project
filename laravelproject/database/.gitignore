@@ -1,1 +1,4 @@
 *.sqlite*
+ProjectUserTableSeeder.php
+DatabaseSeeder.php
+
