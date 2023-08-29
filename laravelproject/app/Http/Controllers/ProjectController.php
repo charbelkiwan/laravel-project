@@ -74,12 +74,14 @@ class ProjectController extends Controller
 
         return Excel::download(new ProjectsExport($filters), 'projects.xlsx');
     }
-    public function import()
+    public function import(Request $request)
     {
-        $filePath = storage_path('app/import_projects.xlsx');
-
-        Excel::import(new ProjectsImport, $filePath);
-
-        return response()->json(['message' => 'Projects imported successfully']);
+        if ($request->hasFile('import_file')) {
+            $imported_file = $request->file('import_file');
+            Excel::import(new ProjectsImport, $imported_file);
+            return response()->json(['message' => 'Projects imported successfully']);
+        } else {
+            return response()->json(['message' => 'No file provided for import']);
+        }
     }
 }
