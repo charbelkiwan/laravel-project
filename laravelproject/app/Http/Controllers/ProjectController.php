@@ -20,7 +20,7 @@ class ProjectController extends Controller
             ->with(['users', 'tasks'])
             ->allowedFilters('title', AllowedFilter::exact('id'))
             ->allowedSorts('created_at', 'id', 'title')
-            ->defaultSort('-created_at')
+            ->defaultSort('created_at')
             ->paginate(request('per_page', 10))
             ->appends(request()->query());
 
