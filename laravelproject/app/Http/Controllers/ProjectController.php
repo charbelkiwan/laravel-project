@@ -11,26 +11,37 @@ use App\Exports\ProjectsExport;
 use App\Imports\ProjectsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cache;
 
 class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = QueryBuilder::for(Project::class)
-            ->with(['users', 'tasks'])
-            ->allowedFilters('title', AllowedFilter::exact('id'))
-            ->allowedSorts('created_at', 'id', 'title')
-            ->defaultSort('created_at')
-            ->paginate(request('per_page', 10))
-            ->appends(request()->query());
+        $cache_key = 'projects.index';
+
+        $projects = Cache::remember($cache_key, now()->addMinutes(10), function () {
+            return QueryBuilder::for(Project::class)
+                ->with(['users', 'tasks'])
+                ->allowedFilters('title', AllowedFilter::exact('id'))
+                ->allowedSorts('created_at', 'id', 'title')
+                ->defaultSort('-created_at')
+                ->paginate(request('per_page', 10))
+                ->appends(request()->query());
+        });
 
         return response(['success' => true, 'data' => $projects]);
     }
 
     public function show(Project $project)
     {
-        $project->load('users', 'tasks');
-        return response(['success' => true, 'data' => $project]);
+        $cache_key = 'projects.show.' . $project->id;
+
+        $cached_project = Cache::remember($cache_key, now()->addMinutes(10), function () use ($project) {
+            $project->load('users', 'tasks');
+            return $project;
+        });
+
+        return response(['success' => true, 'data' => $cached_project]);
     }
 
     public function store(Request $request)
