@@ -12,6 +12,7 @@ use App\Imports\ProjectsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class ProjectController extends Controller
 {
@@ -19,7 +20,10 @@ class ProjectController extends Controller
     {
         $cache_key = 'projects.index';
 
-        $projects = Cache::remember($cache_key, now()->addMinutes(10), function () {
+        Log::info('cash key:' . $cache_key);
+
+        $projects = Cache::remember($cache_key, 10, function () {
+            Log::info('Fetching data from the database');
             return QueryBuilder::for(Project::class)
                 ->with(['users', 'tasks'])
                 ->allowedFilters('title', AllowedFilter::exact('id'))
@@ -28,6 +32,11 @@ class ProjectController extends Controller
                 ->paginate(request('per_page', 10))
                 ->appends(request()->query());
         });
+        if (Cache::has($cache_key)) {
+            Log::info('Data fetched from cache');
+        } else {
+            Log::info('Data generated and cached');
+        }
 
         return response(['success' => true, 'data' => $projects]);
     }
