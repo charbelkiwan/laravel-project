@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Hash;
 
 class SessionController extends Controller
@@ -20,7 +21,23 @@ class SessionController extends Controller
             'password' => 'required|string',
         ]);
 
-        if (!auth()->attempt($attributes)) {
+        $rate_limited = RateLimiter::attempt(
+            'login:'.$attributes['email'],
+            2, 
+            function () use ($attributes) {
+                return auth()->attempt($attributes);
+            },
+            60
+        );
+
+        if (!$rate_limited) {
+            $seconds_remaining = RateLimiter::availableIn('login:'.$attributes['email']);
+            return response()->json([
+                'message' => 'Too many login attempts. Please try again after ' . $seconds_remaining . ' seconds.'
+            ], Response::HTTP_TOO_MANY_REQUESTS);
+        }
+
+        if (!$rate_limited || !auth()->attempt($attributes)) {
             throw ValidationException::withMessages([
                 'email' => 'Your provided credentials could not be verified.'
             ]);

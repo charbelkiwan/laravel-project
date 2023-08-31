@@ -25,7 +25,7 @@ Route::middleware(['throttle:2,1'])->group(function () {
     Route::apiResource('tasks', TaskController::class);
 });
 
-Route::post('login', [SessionController::class, 'store'])->middleware('throttle:2,1');
+Route::post('login', [SessionController::class, 'store']);
 Route::middleware('auth:sanctum')->post('logout', [SessionController::class, 'destroy']);
 
 Route::get('export', [ProjectController::class, 'export']);
