@@ -22,8 +22,8 @@ class SessionController extends Controller
         ]);
 
         $rate_limited = RateLimiter::attempt(
-            'login:'.$attributes['email'],
-            2, 
+            'login:' . $attributes['email'],
+            2,
             function () use ($attributes) {
                 return auth()->attempt($attributes);
             },
@@ -31,13 +31,13 @@ class SessionController extends Controller
         );
 
         if (!$rate_limited) {
-            $seconds_remaining = RateLimiter::availableIn('login:'.$attributes['email']);
+            $seconds_remaining = RateLimiter::availableIn('login:' . $attributes['email']);
             return response()->json([
                 'message' => 'Too many login attempts. Please try again after ' . $seconds_remaining . ' seconds.'
             ], Response::HTTP_TOO_MANY_REQUESTS);
         }
 
-        if (!$rate_limited || !auth()->attempt($attributes)) {
+        if (!auth()->attempt($attributes)) {
             throw ValidationException::withMessages([
                 'email' => 'Your provided credentials could not be verified.'
             ]);
