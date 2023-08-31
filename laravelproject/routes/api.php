@@ -19,11 +19,13 @@ use App\Http\Controllers\API\SessionController;
 |
 */
 
-Route::apiResource('users', UserController::class);
-Route::apiResource('projects', ProjectController::class);
-Route::apiResource('tasks', TaskController::class);
+Route::middleware(['throttle:2,1'])->group(function () {
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('projects', ProjectController::class);
+    Route::apiResource('tasks', TaskController::class);
+});
 
-Route::post('login', [SessionController::class, 'store']);
+Route::post('login', [SessionController::class, 'store'])->middleware('throttle:2,1');
 Route::middleware('auth:sanctum')->post('logout', [SessionController::class, 'destroy']);
 
 Route::get('export', [ProjectController::class, 'export']);
